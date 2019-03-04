@@ -28,14 +28,15 @@ public class BaseRecyclerView extends RecyclerView {
     private BaseRecyclerViewAdapter baseRecyclerViewAdapter;
     private float startY;//手指开始的位置
     private float endY;//手指结束的位置
-    public static boolean isLoading;//避免重复加载
+    //    public static boolean isLoading;//避免重复加载
+    private boolean showing;//避免重复加载
 
     public BaseRecyclerView(Context context) {
-        this(context,null,0);
+        this(context, null, 0);
     }
 
     public BaseRecyclerView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public BaseRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
@@ -58,9 +59,9 @@ public class BaseRecyclerView extends RecyclerView {
         LayoutManager layoutManager = getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-        }else if (layoutManager instanceof GridLayoutManager) {
+        } else if (layoutManager instanceof GridLayoutManager) {
             lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-        }else if (layoutManager instanceof StaggeredGridLayoutManager) {
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             int[] last = null;
             if (!isInit) {
                 last = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
@@ -71,42 +72,49 @@ public class BaseRecyclerView extends RecyclerView {
                 lastVisibleItemPosition = i > lastVisibleItemPosition ? i : lastVisibleItemPosition;
             }
         }
-        switch (ev.getAction()){
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                startY=ev.getY();
+                startY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 //当正在执行加载的操作时，屏蔽掉多余的加载操作，直至该加载完成之后执行第二次加载的操作
-                if(!isLoading){
-                    endY=ev.getY();
+                if (!showing) {
+                    endY = ev.getY();
                     //此时滑动到底部并且为上拉的动作，执行加载的操作方法
-                    if(( endY-startY) < 0 && lastVisibleItemPosition == baseRecyclerViewAdapter.getItemCount() -1 ){
-                        if(listener==null){
+                    if ((endY - startY) < 0 && lastVisibleItemPosition == baseRecyclerViewAdapter.getItemCount() - 1) {
+                        if (listener == null) {
                             break;
                         }
                         listener.loadMore();
-                        isLoading=true;
+                        showing = true;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                startY=0;
-                endY=0;
+                startY = 0;
+                endY = 0;
                 break;
             case MotionEvent.ACTION_CANCEL:
-                startY=0;
-                endY=0;
+                startY = 0;
+                endY = 0;
                 break;
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    public interface onLoadMoreListener{
+    public interface onLoadMoreListener {
         void loadMore();
     }
 
-    public void setListener(onLoadMoreListener listener){
-        this.listener=listener;
+    public void setListener(onLoadMoreListener listener) {
+        this.listener = listener;
     }
 
+    public boolean isShowing() {
+        return showing;
+    }
+
+    public void setShowing(boolean showing) {
+        this.showing = showing;
+    }
 }

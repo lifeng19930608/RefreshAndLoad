@@ -1,6 +1,7 @@
 package com.lifeng.refreshandload.adapter;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BannerViewHold
     private onItemClickListener listener;
 
     public NewsAdapter(ArrayList<Data> lists) {
-        this.lists=lists;
+        this.lists = lists;
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.empty)//加载显示的图片
                 .showImageOnFail(R.mipmap.place_holder)//加载失败显示的图片
@@ -40,23 +41,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BannerViewHold
                 .build();
     }
 
+    @NonNull
     @Override
-    public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false);
+    public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
         return new BannerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(BannerViewHolder holder, final int position) {
-        Data data=lists.get(position);
+    public void onBindViewHolder(@NonNull BannerViewHolder holder, final int position) {
+        Data data = lists.get(position);
         holder.textView.setText(data.getText());
-        if(data.getUrl() != null && data.getUrl().length()>0){
-            ImageLoader.getInstance().displayImage(data.getUrl(),holder.imageView,options);
+        if (data.getUrl() != null && data.getUrl().length() > 0) {
+            ImageLoader.getInstance().displayImage(data.getUrl(), holder.imageView, options);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(listener==null){
+                if (listener == null) {
                     return;
                 }
                 listener.click(position);
@@ -69,23 +71,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BannerViewHold
         return lists.size();
     }
 
-    static class BannerViewHolder extends RecyclerView.ViewHolder{
+    static class BannerViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;//图片
         TextView textView;//文本
-        public BannerViewHolder(View itemView) {
+
+        BannerViewHolder(View itemView) {
             super(itemView);
-            imageView= (ImageView) itemView.findViewById(R.id.image);
-            textView= (TextView) itemView.findViewById(R.id.text);
+            imageView = itemView.findViewById(R.id.image);
+            textView = itemView.findViewById(R.id.text);
         }
     }
 
-    public interface onItemClickListener{
+    public interface onItemClickListener {
         void click(int position);
     }
 
-    public void setListener(onItemClickListener listener){
-        this.listener=listener;
+    public void setListener(onItemClickListener listener) {
+        this.listener = listener;
     }
 
 }

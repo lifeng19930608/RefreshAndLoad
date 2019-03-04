@@ -35,8 +35,8 @@ public class BaseRecyclerViewAdapter<T extends RecyclerView.Adapter> extends Rec
     private static final int HEADER_VIEW_TYPE = -1000;
     private static final int FOOTER_VIEW_TYPE = -2000;
 
-    private final List<View> mHeaders = new ArrayList<View>();
-    private final List<View> mFooters = new ArrayList<View>();
+    private final List<View> mHeaders = new ArrayList<>();
+    private final List<View> mFooters = new ArrayList<>();
 
     /**
      * Constructor.
@@ -131,8 +131,9 @@ public class BaseRecyclerViewAdapter<T extends RecyclerView.Adapter> extends Rec
         return viewType >= FOOTER_VIEW_TYPE && viewType < (FOOTER_VIEW_TYPE + mFooters.size());
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         if (isHeader(viewType)) {
             int whichHeader = Math.abs(viewType - HEADER_VIEW_TYPE);
             View headerView = mHeaders.get(whichHeader);
@@ -147,7 +148,7 @@ public class BaseRecyclerViewAdapter<T extends RecyclerView.Adapter> extends Rec
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         if (position < mHeaders.size()) {
             // Headers don't need anything special
             this.position=0;
