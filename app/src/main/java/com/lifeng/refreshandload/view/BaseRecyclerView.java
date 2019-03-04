@@ -28,7 +28,6 @@ public class BaseRecyclerView extends RecyclerView {
     private BaseRecyclerViewAdapter baseRecyclerViewAdapter;
     private float startY;//手指开始的位置
     private float endY;//手指结束的位置
-    //    public static boolean isLoading;//避免重复加载
     private boolean showing;//避免重复加载
 
     public BaseRecyclerView(Context context) {
